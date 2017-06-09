@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
 
     UDP_SEND *udpSend = new UDP_SEND();
     udpSend->sendOriginalTrack(leftCones, rightCones);
+    udpSend->sendSplineLine(rightCones);
 
     return a.exec();
 }

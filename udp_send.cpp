@@ -9,6 +9,25 @@ UDP_SEND::UDP_SEND()
 
 }
 
+void UDP_SEND::sendSplineLine(std::vector<glm::vec2> splineLine)
+{
+    QByteArray msg;
+    msg.append("SET_SPLINE_LINE\n");
+    for (glm::vec2 cone : splineLine)
+    {
+        std::string xString = std::to_string(cone.x);
+        std::string yString = std::to_string(cone.y);
+        QByteArray *xValue = new QByteArray(xString.c_str(), xString.length());
+        QByteArray *yValue = new QByteArray(yString.c_str(), yString.length());
+        msg.append(*xValue);
+        msg.append(" ");
+        msg.append(*yValue);
+        msg.append("\n");
+    }
+    std::cout << "data: " << std::endl << msg.data() << std::endl;
+    udpSocket->writeDatagram(msg, msg.size(), QHostAddress::LocalHost, 1234);
+}
+
 void UDP_SEND::sendOriginalTrack(std::vector<glm::vec2> leftSide, std::vector<glm::vec2> rightSide)
 {
     QByteArray msg;

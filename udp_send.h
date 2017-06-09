@@ -13,7 +13,7 @@ class UDP_SEND : public QObject
 public:
     UDP_SEND();
     void sendOriginalTrack(std::vector<glm::vec2> leftSide, std::vector<glm::vec2> rightSide);
-
+    void sendSplineLine(std::vector<glm::vec2> splineLine);
 private:
     QUdpSocket *udpSocket;  
 };
