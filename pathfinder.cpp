@@ -78,23 +78,23 @@ void PathFinder::iterate()
 
     //std::cout << "l: " << leftLength << " r: " << rightLength << std::endl;
 
-    splineConeList(rightCones.size() * 1, leftCones, &optimisedLeftSide);
-    splineConeList(rightCones.size() * 1, rightCones, &optimisedRightSide);
+    splineConeList(rightCones.size() , leftCones, &optimisedLeftSide);
+    splineConeList(rightCones.size() , rightCones, &optimisedRightSide);
 
     //optimisedLeftSide.print();
     //optimisedRightSide.print();
 
     ConeList middleCones;
     //optimisedRightSide.generateDriveLine(&optimisedLeftSide, &middleCones);
-    generateSimpleMiddleLine(&middleCones, &optimisedRightSide, &optimisedLeftSide);
-
-
+    generateSimpleMiddleLine(&middleCones, &optimisedLeftSide, &optimisedRightSide);
+    ConeList middleConesOptimised;
+    splineConeList(middleCones.size() * 15, middleCones, &middleConesOptimised);
     //middleCones.print();
 
     udpGW->sendOriginalTrack(leftCones, rightCones);
     udpGW->sendSplineLine(optimisedLeftSide);
     udpGW->sendSplineLine(optimisedRightSide);
-    udpGW->sendSplineLine(middleCones);
+    udpGW->sendSplineLine(middleConesOptimised);
 }
 
 void PathFinder::splineConeList(double precision, ConeList coneList, ConeList *resultList)
@@ -104,10 +104,10 @@ void PathFinder::splineConeList(double precision, ConeList coneList, ConeList *r
     std::vector<float> times;
     std::vector<glm::vec2> points;
 
-    for (ConeList::iterator iteratorCone = coneList.begin(); iteratorCone != coneList.end(); ++ iteratorCone)
+    for (TrackedCone cone : coneList)
     {
         times.push_back(counter);
-        points.push_back(glm::vec2(iteratorCone->getXPos(), iteratorCone->getYPos()));
+        points.push_back(glm::vec2(cone.getXPos(), cone.getYPos()));
         counter++;
     }
 
@@ -140,20 +140,10 @@ void PathFinder::createLeftRightConeList()
 
 void PathFinder::addNewCones(ConeList coneList)
 {
-
-    for (std::vector<TrackedCone>::iterator iteratorCone = coneList.begin() ; iteratorCone != coneList.end(); ++iteratorCone)
+    this->coneList.clear();
+    for (TrackedCone cone : coneList)
     {
-        bool isAlreadyInList = false;
-
-        for (std::vector<TrackedCone>::iterator iteratorConeAlreadyIn = this->coneList.begin() ;
-        iteratorConeAlreadyIn != this->coneList.end(); ++iteratorConeAlreadyIn)
-        {
-            if (iteratorCone->isSimilar(&(*iteratorConeAlreadyIn))) isAlreadyInList = true;
-        }
-        if (!isAlreadyInList)
-        {
-            this->coneList.push_back(*iteratorCone);
-        }
+        this->coneList.push_back(cone);
     }
 }
 

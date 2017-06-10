@@ -31,6 +31,7 @@ class PathFinder
 
 
     private:
+        ConeList coneList;
         ConeList leftCones;
         ConeList rightCones;
         UDP_SEND *udpGW;
@@ -45,7 +46,6 @@ class PathFinder
         void generateSimpleMiddleLine(ConeList *resultList, ConeList *rightCones, ConeList *leftCones);
 
         //a list of all cones given by the tracker
-        ConeList coneList;
 };
 
 #endif
