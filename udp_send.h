@@ -6,14 +6,15 @@
 #include <QMainWindow>
 #include <vector>
 #include <glm/glm.hpp>
+#include "conelist.h"
 
 class UDP_SEND : public QObject
 {
     Q_OBJECT
 public:
     UDP_SEND();
-    void sendOriginalTrack(std::vector<glm::vec2> leftSide, std::vector<glm::vec2> rightSide);
-    void sendSplineLine(std::vector<glm::vec2> splineLine);
+    void sendOriginalTrack(ConeList leftSide, ConeList rightSide);
+    void sendSplineLine(ConeList splineLine);
 private:
     QUdpSocket *udpSocket;  
 };

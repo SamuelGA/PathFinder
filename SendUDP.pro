@@ -24,13 +24,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        main.cpp \
         mainwindow.cpp \
-    udp_send.cpp
+    udp_send.cpp \
+    pathfinder.cpp \
+    trackedcone.cpp \
+    spline.cpp \
+    conelist.cpp
 
 HEADERS += \
         mainwindow.h \
-    udp_send.h
+    udp_send.h \
+    pathfinder.h \
+    trackedcone.h \
+    conelist.h
 
 FORMS += \
         mainwindow.ui
