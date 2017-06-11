@@ -10,8 +10,11 @@ class ConeList : public std::vector<TrackedCone>
         void print();
 
         TrackedCone nearestCone(TrackedCone cone);
+
         void generateDriveLine(ConeList *list, ConeList *resultLine);
         double calculateLength();
+        void sortByDistance(int originalSize, ConeList *result, TrackedCone startCone);
+
 };
 
 #endif

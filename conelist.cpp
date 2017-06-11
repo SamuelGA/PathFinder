@@ -16,6 +16,29 @@ void ConeList::print()
     std::cout << std::endl;
 }
 
+void ConeList::sortByDistance(int originalSize, ConeList *result, TrackedCone startCone)
+{
+
+    if (originalSize == result->size()) return;
+
+    TrackedCone nearestCone = this->nearestCone(startCone);
+
+
+    result->push_back(nearestCone);
+
+    int counter = 0;
+    for (TrackedCone cone : *this)
+    {
+        if (cone.getXPos() == nearestCone.getXPos() && cone.getYPos() == nearestCone.getYPos())
+        {
+            this->erase(this->begin() + counter);
+        }
+        counter++;
+    }
+
+    sortByDistance(originalSize, result, nearestCone);
+}
+
 TrackedCone ConeList::nearestCone(TrackedCone coneInput)
 {
     double distance = 100000;
@@ -23,15 +46,16 @@ TrackedCone ConeList::nearestCone(TrackedCone coneInput)
 
     for (TrackedCone cone : *this)
     {
-        int newDistance = coneInput.distanceToCone(&cone);
+        double newDistance = coneInput.distanceToCone(&cone);
         if (newDistance < distance)
         {
-            std::cout << distance;
-            nearest.print();
             nearest = cone;
             distance = newDistance;
         }
     }
+    std::cout << "from: " ; coneInput.print();
+    std::cout << distance << std::endl;
+    std::cout << "next: " ; nearest.print();
     return nearest;
 }
 

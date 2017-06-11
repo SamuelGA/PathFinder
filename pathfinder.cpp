@@ -31,24 +31,28 @@ int main()
 
     ConeList coneListInput;
 
-    coneListInput.push_back(*coneOneL);
-    coneListInput.push_back(*coneOneR);
+
+
     coneListInput.push_back(*coneTwoL);
+
     coneListInput.push_back(*coneTwoR);
     coneListInput.push_back(*cone3Li);
-    coneListInput.push_back(*coneThreeR);
-    coneListInput.push_back(*cone4Li);
+          coneListInput.push_back(*coneOneL);
+    coneListInput.push_back(*cone6Li);
     coneListInput.push_back(*cone4R);
+       coneListInput.push_back(*coneOneR);
     coneListInput.push_back(*cone5Li);
     coneListInput.push_back(*cone5R);
-    coneListInput.push_back(*cone6Li);
+    coneListInput.push_back(*cone8Li);
     coneListInput.push_back(*cone6R);
     coneListInput.push_back(*cone7Li);
-    coneListInput.push_back(*cone8Li);
+    coneListInput.push_back(*coneThreeR);
+    coneListInput.push_back(*cone4Li);
     coneListInput.push_back(TrackedCone(20, -13, 1));
     coneListInput.push_back(TrackedCone(24, -5, 0));
-    coneListInput.push_back(TrackedCone(24, -13, 0));
+
     coneListInput.push_back(TrackedCone(23, -16, 0));
+    coneListInput.push_back(TrackedCone(24, -13, 0));
 
 
     pathfinder->addNewCones(coneListInput);
@@ -69,17 +73,23 @@ void PathFinder::iterate()
     //first of all seperating the cones by their color
     this->createLeftRightConeList();
 
+    ConeList sortedRightSide;
+    ConeList sortedLeftSide;
+    ConeList rightConesCopy = rightCones;
+    ConeList leftConesCopy = leftCones;
+
+    rightConesCopy.sortByDistance(rightConesCopy.size(), &sortedRightSide, TrackedCone(0, 0, 0));
+    leftConesCopy.sortByDistance(leftConesCopy.size(), &sortedLeftSide, TrackedCone(0, 0, 0));
+
+    sortedLeftSide.print();
+    sortedRightSide.print();
+
     //then spline both sides
     ConeList optimisedLeftSide;
     ConeList optimisedRightSide;
 
-    double leftLength = ceil(leftCones.calculateLength());
-    double rightLength = ceil(rightCones.calculateLength());
-
-    //std::cout << "l: " << leftLength << " r: " << rightLength << std::endl;
-
-    splineConeList(rightCones.size() , leftCones, &optimisedLeftSide);
-    splineConeList(rightCones.size() , rightCones, &optimisedRightSide);
+    splineConeList(sortedLeftSide.size(), sortedLeftSide, &optimisedLeftSide);
+    splineConeList(sortedLeftSide.size(), sortedRightSide, &optimisedRightSide);
 
     //optimisedLeftSide.print();
     //optimisedRightSide.print();
@@ -91,7 +101,7 @@ void PathFinder::iterate()
     splineConeList(middleCones.size() * 15, middleCones, &middleConesOptimised);
     //middleCones.print();
 
-    udpGW->sendOriginalTrack(leftCones, rightCones);
+    udpGW->sendOriginalTrack(sortedLeftSide, sortedRightSide);
     udpGW->sendSplineLine(optimisedLeftSide);
     udpGW->sendSplineLine(optimisedRightSide);
     udpGW->sendSplineLine(middleConesOptimised);
